@@ -155,6 +155,20 @@
     done: $("#done"), again: $("#again"), edit: $("#edit"), finale: $("#finale"),
   };
   let names = [];
+  let pending = [];      // nombres que aún no han hablado
+
+  // "Geno" (sin importar mayúsculas ni tildes) siempre habla de último.
+  const isLast = (name) =>
+    name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase() === "geno";
+
+  // El nombre se sortea al hacer click: como está oculto, da igual qué pollito se toque.
+  function drawName() {
+    const others = pending.filter((n) => !isLast(n));
+    const pool = others.length ? others : pending;
+    const name = pool[Math.floor(Math.random() * pool.length)];
+    pending.splice(pending.indexOf(name), 1);
+    return name;
+  }
   let selected = null;   // { slot, button, name }
   let left = 0;
   let turn = 0;
@@ -203,6 +217,7 @@
     selected = null;
     turn = 0;
     left = order.length;
+    pending = order.slice();
     Exits.reset(order.length);
 
     order.forEach((name, i) => {
@@ -225,7 +240,7 @@
       body.innerHTML = chickSVG(variants[i]);
 
       btn.append(tag, body);
-      btn.addEventListener("click", () => select(slot, btn, tag, name, variants[i]));
+      btn.addEventListener("click", () => { if (!selected) select(slot, btn, tag, drawName(), variants[i]); });
       slot.append(btn);
       els.row.append(slot);
     });
