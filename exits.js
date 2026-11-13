@@ -225,7 +225,24 @@ window.ChickExits = (() => {
     return b;
   }
 
-  // ---------- Las 7 salidas ----------
+  function feathers(ctx, count = 6) {
+    const cx = ctx.slot.offsetWidth / 2;
+    for (let i = 0; i < count; i++) {
+      const f = document.createElement("div");
+      f.className = "feather";
+      f.style.left = `${cx + (Math.random() - 0.5) * ctx.size * 0.6}px`;
+      f.style.bottom = `${ctx.size * (0.6 + Math.random() * 0.4)}px`;
+      ctx.slot.append(f);
+      const sway = (Math.random() - 0.5) * 60;
+      run(f, [
+        { transform: "translate(0,0) rotate(0)", opacity: 1 },
+        { transform: `translate(${sway}px, ${ctx.size * 0.3}px) rotate(${120 + Math.random() * 120}deg)`, opacity: 1, offset: 0.6 },
+        { transform: `translate(${-sway}px, ${ctx.size * 0.6}px) rotate(300deg)`, opacity: 0 },
+      ], { duration: 1600 + Math.random() * 600, delay: i * 80, easing: "ease-out" }).then(() => f.remove());
+    }
+  }
+
+  // ---------- Las salidas ----------
   const EXITS = {
     carro: {
       label: (n) => `${n} se va en su carro 🚗`,
@@ -453,6 +470,23 @@ window.ChickExits = (() => {
           { transform: "translateX(0)" },
           { transform: `translateX(${off.right + size}px)` },
         ], { duration: 1500, easing: "cubic-bezier(.5,0,.8,.5)" });
+      },
+    },
+    volando: {
+      label: (n) => `${n} se va volando 🐥`,
+      async play(ctx) {
+        const { chick, size } = ctx;
+        chick.classList.add("flying");
+        await run(chick, [{ transform: "translateY(0)" }, { transform: `translateY(${-size * 0.3}px)` }],
+          { duration: 700, easing: "ease-out" });
+        feathers(ctx, 7);
+        const off = offscreen(chick);
+        await run(chick, [
+          { transform: `translate(0, ${-size * 0.3}px) rotate(0)` },
+          { transform: `translate(${size * 0.8}px, ${-size * 0.9}px) rotate(10deg)`, offset: 0.3 },
+          { transform: `translate(${size * 1.8}px, ${-size * 0.7}px) rotate(6deg)`, offset: 0.5 },
+          { transform: `translate(${off.right}px, ${off.up - size}px) rotate(15deg)` },
+        ], { duration: 1800, easing: "ease-in" });
       },
     },
   };
