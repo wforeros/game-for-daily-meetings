@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=10" />
+  <link rel="stylesheet" href="styles.css?v=11" />
 </head>
 <body>
   <div class="sky" aria-hidden="true">
@@ -25,6 +25,10 @@
       <h1>Pollitos del Daily</h1>
       <p class="subtitle">Escribe los nombres de los participantes, uno por línea.</p>
       <textarea id="names" rows="7" placeholder="Ana&#10;Carlos&#10;Lucía&#10;Pedro" spellcheck="false"></textarea>
+      <div id="roles" class="roles hidden">
+        <p class="roles-title">¿Qué hace cada quien?</p>
+        <ul id="roleList" class="role-list"></ul>
+      </div>
       <div class="setup-footer">
         <span id="count" class="count">0 participantes</span>
         <button id="start" class="btn btn-primary" disabled>¡A formarse! 🐣</button>
@@ -62,7 +66,7 @@
     </div>
   </main>
 
-  <script src="exits.js?v=10"></script>
-  <script src="app.js?v=10"></script>
+  <script src="exits.js?v=11"></script>
+  <script src="app.js?v=11"></script>
 </body>
 </html>

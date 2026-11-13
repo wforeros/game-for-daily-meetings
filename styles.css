@@ -101,6 +101,29 @@ textarea {
 }
 textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(255,138,61,.18); }
 
+.roles { margin-top: 14px; text-align: left; }
+.roles-title { margin: 0 0 6px; font-weight: 700; color: var(--ink-soft); }
+.role-list {
+  list-style: none; margin: 0; padding: 0;
+  max-height: 240px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.role-list li {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  background: #fff; border: 2px solid #f1dfc3; border-radius: 14px;
+  padding: 4px 4px 4px 12px;
+}
+.role-name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.role-toggle { display: flex; flex-shrink: 0; background: #f6ead6; border-radius: 999px; padding: 3px; }
+.role-toggle button {
+  font: inherit; font-size: .85rem; font-weight: 700;
+  border: 0; background: transparent; color: var(--ink-soft);
+  padding: 3px 10px; border-radius: 999px; cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.role-toggle button[aria-checked="true"] { background: var(--accent); color: #fff; }
+.role-toggle button:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+
 .setup-footer {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   margin-top: 16px; flex-wrap: wrap;
@@ -430,6 +453,7 @@ textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(255,138
   .btn-next { font-size: 1.2rem; padding: 12px 22px; right: 16px; bottom: 16px; }
   .row { padding-bottom: 8vh; }
   .done { padding-bottom: 8vh; }
+  .role-toggle button { font-size: .75rem; padding: 3px 7px; }
   .finale { gap: 40px 4px; }
   .talk { font-size: .8rem; padding: 3px 9px; }
   #restart { font-size: .95rem; padding: 8px 14px; }

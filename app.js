@@ -144,6 +144,7 @@
     text.split(/[\n,]+/).map((s) => s.trim()).filter(Boolean);
 
   const STORAGE_KEY = "pollitos-daily-names";
+  const ROLES_KEY = "pollitos-daily-roles";
   const load = () => { try { return localStorage.getItem(STORAGE_KEY) || ""; } catch { return ""; } };
   const save = (v) => { try { localStorage.setItem(STORAGE_KEY, v); } catch { /* sin storage */ } };
 
@@ -153,8 +154,13 @@
     start: $("#start"), row: $("#row"), hint: $("#hint"), remaining: $("#remaining"),
     spoken: $("#spoken"), next: $("#next"), restart: $("#restart"),
     done: $("#done"), again: $("#again"), edit: $("#edit"), finale: $("#finale"),
+    roles: $("#roles"), roleList: $("#roleList"),
   };
   let names = [];
+  let roles = {};        // { nombre: "dev" | "design" }
+  try { roles = JSON.parse(localStorage.getItem(ROLES_KEY)) || {}; } catch { roles = {}; }
+  const roleOf = (name) => (roles[name] === "design" ? "design" : "dev");
+  const saveRoles = () => { try { localStorage.setItem(ROLES_KEY, JSON.stringify(roles)); } catch { /* sin storage */ } };
   let pending = [];      // nombres que aún no han hablado
 
   // "Geno" (sin importar mayúsculas ni tildes) siempre habla de último.
@@ -179,9 +185,44 @@
   $("#setupChick").innerHTML = chickSVG("guante");
 
   function updateCount() {
-    const n = parseNames(els.names.value).length;
+    const list = parseNames(els.names.value);
+    const n = list.length;
     els.count.textContent = `${n} participante${n === 1 ? "" : "s"}`;
     els.start.disabled = n === 0;
+    renderRoles(list);
+  }
+
+  // Lista para elegir si cada participante es de programación o de diseño
+  function renderRoles(list) {
+    const unique = [...new Set(list)];
+    els.roles.classList.toggle("hidden", unique.length === 0);
+    els.roleList.innerHTML = "";
+    unique.forEach((name) => {
+      const li = document.createElement("li");
+      const label = document.createElement("span");
+      label.className = "role-name";
+      label.textContent = name;
+      label.title = name;
+      const group = document.createElement("div");
+      group.className = "role-toggle";
+      group.setAttribute("role", "radiogroup");
+      group.setAttribute("aria-label", `Rol de ${name}`);
+      [["dev", "💻 Programación"], ["design", "🎨 Diseño"]].forEach(([value, text]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.textContent = text;
+        b.setAttribute("role", "radio");
+        b.setAttribute("aria-checked", String(roleOf(name) === value));
+        b.addEventListener("click", () => {
+          roles[name] = value;
+          saveRoles();
+          group.querySelectorAll("button").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
+        });
+        group.append(b);
+      });
+      li.append(label, group);
+      els.roleList.append(li);
+    });
   }
   els.names.value = load();
   updateCount();
@@ -265,7 +306,7 @@
     if (!selected) return;
     const { slot, name, variant } = selected;
     selected = null;
-    spokenOrder.push({ name, variant });
+    spokenOrder.push({ name, variant, role: roleOf(name) });
     els.next.classList.add("hidden");
 
     turn++;
@@ -278,7 +319,7 @@
       ? "Ya no quedan pollitos"
       : `Quedan ${left} pollito${left === 1 ? "" : "s"}`;
 
-    await Exits.play(slot, name, (text) => (els.hint.textContent = text));
+    await Exits.play(slot, name, (text) => (els.hint.textContent = text), roleOf(name));
 
     slot.classList.add("gone");
     await sleep(500);
@@ -329,18 +370,27 @@
   }
 
   // ---------- Pantalla final: todos los pollitos charlando ----------
-  const PHRASES = [
-    "¡Listo!", "Sin bloqueos 💪", "Bla, bla, bla…", "¡Gracias, equipo!", "Nos vemos 👋",
-    "PR en review 👀", "¿Café? ☕", "¡Pío pío!", "Todo en verde ✅", "Mañana sigo",
-    "¡Buen daily!", "Jajaja 😂", "¿Quién comparte pantalla?", "¡Se me fue el internet!",
-    "Ya lo deployé 🚀", "Te escribo por chat", "¡Me encanta!", "¿Lo vemos después?",
-  ];
+  const PHRASES = {
+    common: [
+      "¡Listo!", "Bla, bla, bla…", "¡Gracias, equipo!", "Nos vemos 👋", "¿Café? ☕", "¡Pío pío!",
+      "Mañana sigo", "¡Buen daily!", "Jajaja 😂", "¿Quién comparte pantalla?",
+      "¡Se me fue el internet!", "Te escribo por chat", "¡Me encanta!", "¿Lo vemos después?",
+    ],
+    dev: ["PR en review 👀", "Ya lo deployé 🚀", "Todo en verde ✅", "Sin bloqueos 💪", "¿Quién rompió main?"],
+    design: ["Te paso el Figma 🎨", "¿Lo vemos en el prototipo?", "Le falta aire a ese margen",
+      "Ya subí los assets ✨", "¿Probamos otra paleta?"],
+  };
+  const phraseFor = (role) => {
+    const list = [...PHRASES.common, ...(PHRASES[role] || PHRASES.dev)];
+    return list[Math.floor(Math.random() * list.length)];
+  };
 
   function showFinale() {
     els.finale.innerHTML = "";
-    spokenOrder.forEach(({ name, variant }, i) => {
+    spokenOrder.forEach(({ name, variant, role }, i) => {
       const slot = document.createElement("div");
       slot.className = "finale-chick";
+      slot.dataset.role = role;
       slot.style.setProperty("--i", i);
       slot.style.setProperty("--delay", `${(-Math.random() * 2.4).toFixed(2)}s`);
 
@@ -370,7 +420,7 @@
       const maxTalking = Math.max(1, Math.ceil(chicks.length / 3));
       if (!quiet.length || chicks.length - quiet.length >= maxTalking) return;
       const c = quiet[Math.floor(Math.random() * quiet.length)];
-      c.querySelector(".talk").textContent = PHRASES[Math.floor(Math.random() * PHRASES.length)];
+      c.querySelector(".talk").textContent = phraseFor(c.dataset.role);
       c.classList.add("talking");
       setTimeout(() => c.classList.remove("talking"), 1800 + Math.random() * 900);
     };

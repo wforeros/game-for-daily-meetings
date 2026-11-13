@@ -3,6 +3,8 @@
 App 100% frontend para sortear el orden de los updates en una reunión.
 
 1. Escribe los nombres de los participantes (uno por línea o separados por comas).
+   Debajo eliges si cada persona es de 💻 programación o de 🎨 diseño: los
+   mensajes de despedida y de la pantalla final cambian según su rol.
 2. Cada participante es un pollito con un número; los nombres se asignan al azar.
 3. Haz click en un pollito: levanta el ala y su etiqueta muestra el nombre.
 4. Pulsa **Siguiente** (o `→`) y el pollito se va. Luego elige al siguiente.

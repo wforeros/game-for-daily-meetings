@@ -506,56 +506,74 @@ window.ChickExits = (() => {
   }
 
   // ---------- Despedidas ----------
-  const FAREWELLS = [
-    "¡Me voy a tomar un café… de 3 horas! ☕",
-    "Si alguien pregunta, estoy en otra reunión",
-    "¡En mi máquina funciona! 👋",
-    "Me voy antes de que me asignen otro ticket",
-    "Nos vemos en el próximo daily… o no 😎",
-    "¡Hasta la vista, bugs!",
-    "Voy a hacer merge sin review 😈",
-    "Bueno, a fingir que trabajo",
-    "¡Chao! Dejé el build roto 🙃",
-    "Me llama mi mamá gallina 🐔",
-    "Alt + F4 y me voy 👋",
-    "Mi update era que me voy",
-    "Me voy a picotear unos bugs 🐛",
-    "Esta reunión pudo ser un correo 📧",
-    "Cámara apagada, modo siesta 😴",
-    "Les dejo mis bloqueos de regalo 🎁",
-    "¡Adiós! No toquen producción 🔥",
-    "Me voy a mover tickets a «Done» 😏",
-    "¿Ya me puedo ir? ¡Gracias!",
-    "Si se cae Claude, no trabajo 🤷",
-  ];
+  // Comunes a todos + específicas de programación (dev) o de diseño (design)
+  const FAREWELLS = {
+    common: [
+      "¡Me voy a tomar un café… de 3 horas! ☕",
+      "Si alguien pregunta, estoy en otra reunión",
+      "Nos vemos en el próximo daily… o no 😎",
+      "Bueno, a fingir que trabajo",
+      "Me llama mi mamá gallina 🐔",
+      "Alt + F4 y me voy 👋",
+      "Mi update era que me voy",
+      "Esta reunión pudo ser un correo 📧",
+      "Cámara apagada, modo siesta 😴",
+      "Les dejo mis bloqueos de regalo 🎁",
+      "¿Ya me puedo ir? ¡Gracias!",
+    ],
+    dev: [
+      "¡En mi máquina funciona! 👋",
+      "Me voy antes de que me asignen otro ticket",
+      "¡Hasta la vista, bugs!",
+      "Voy a hacer merge sin review 😈",
+      "¡Chao! Dejé el build roto 🙃",
+      "Me voy a picotear unos bugs 🐛",
+      "¡Adiós! No toquen producción 🔥",
+      "Me voy a mover tickets a «Done» 😏",
+      "Es un cambio de una línea… son 400 archivos",
+      "Voy a renombrar variables, deséenme suerte",
+    ],
+    design: [
+      "Me voy a mover píxeles 🎨",
+      "Ese botón necesita 2px más a la izquierda",
+      "Voy a pelear con Figma, deséenme suerte",
+      "¡Chao! Alineen sus márgenes 📐",
+      "Me voy a buscar la tipografía perfecta",
+      "Mi update: 47 versiones del mismo ícono",
+      "No toquen mi Figma 🔒",
+      "En el diseño se veía mejor 👀",
+      "Ese no es rojo, es coral 🪸",
+      "Me voy a hacer un moodboard ✨",
+    ],
+  };
   const CLAUDE_FAREWELL = "Si se cae Claude, no trabajo 🤷";
-  let farewellBag = [];
+  let usedFarewells = new Set();
+  let farewellCount = 0;
   let claudeSlot = 0; // en qué despedida de la ronda (0–3) sale la de Claude
 
   function newRound(participants = 4) {
     bag = [];
-    farewellBag = [];
+    usedFarewells = new Set();
+    farewellCount = 0;
     claudeSlot = Math.floor(Math.random() * Math.min(4, Math.max(1, participants)));
   }
 
-  function farewell() {
-    if (!farewellBag.length) {
-      farewellBag = FAREWELLS.filter((f) => f !== CLAUDE_FAREWELL);
-      for (let i = farewellBag.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [farewellBag[i], farewellBag[j]] = [farewellBag[j], farewellBag[i]];
-      }
-      // Se sacan desde el final: la de Claude queda entre las 4 primeras
-      if (claudeSlot !== null) {
-        farewellBag.splice(farewellBag.length - claudeSlot, 0, CLAUDE_FAREWELL);
-        claudeSlot = null;
-      }
+  function farewell(role) {
+    const turn = farewellCount++;
+    if (turn === claudeSlot) return CLAUDE_FAREWELL;
+    const options = [...FAREWELLS.common, ...(FAREWELLS[role] || FAREWELLS.dev)];
+    let fresh = options.filter((f) => !usedFarewells.has(f));
+    if (!fresh.length) {
+      options.forEach((f) => usedFarewells.delete(f));
+      fresh = options;
     }
-    return farewellBag.pop();
+    const pick = fresh[Math.floor(Math.random() * fresh.length)];
+    usedFarewells.add(pick);
+    return pick;
   }
 
   async function sayGoodbye(ctx) {
-    const b = bubble(ctx, farewell());
+    const b = bubble(ctx, farewell(ctx.role));
     b.classList.add("farewell");
     // Que el globo no se salga de la pantalla
     const r = b.getBoundingClientRect();
@@ -567,7 +585,7 @@ window.ChickExits = (() => {
       { transform: "translateY(0)" }, { transform: "translateY(-10px)" }, { transform: "translateY(0)" },
       { transform: "translateY(-6px)" }, { transform: "translateY(0)" },
     ], { duration: 600, fill: "none" });
-    await sleep(3200);
+    await sleep(2300);
     await run(b, [{ opacity: 1 }, { opacity: 0 }], { duration: 250 });
     b.remove();
   }
@@ -587,10 +605,10 @@ window.ChickExits = (() => {
     return k;
   }
 
-  async function play(slot, name, setHint, forced) {
+  async function play(slot, name, setHint, role = "dev", forced = null) {
     const chick = slot.querySelector(".chick");
     const ctx = {
-      slot, chick, name,
+      slot, chick, name, role,
       body: chick.querySelector(".chick-body"),
       tag: chick.querySelector(".tag"),
       size: chick.offsetWidth,
