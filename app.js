@@ -203,7 +203,7 @@
     selected = null;
     turn = 0;
     left = order.length;
-    Exits.reset();
+    Exits.reset(order.length);
 
     order.forEach((name, i) => {
       const slot = document.createElement("div");

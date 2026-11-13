@@ -494,13 +494,27 @@ window.ChickExits = (() => {
     "¿Ya me puedo ir? ¡Gracias!",
     "Si se cae Claude, no trabajo 🤷",
   ];
+  const CLAUDE_FAREWELL = "Si se cae Claude, no trabajo 🤷";
   let farewellBag = [];
+  let claudeSlot = 0; // en qué despedida de la ronda (0–3) sale la de Claude
+
+  function newRound(participants = 4) {
+    bag = [];
+    farewellBag = [];
+    claudeSlot = Math.floor(Math.random() * Math.min(4, Math.max(1, participants)));
+  }
+
   function farewell() {
     if (!farewellBag.length) {
-      farewellBag = FAREWELLS.slice();
+      farewellBag = FAREWELLS.filter((f) => f !== CLAUDE_FAREWELL);
       for (let i = farewellBag.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [farewellBag[i], farewellBag[j]] = [farewellBag[j], farewellBag[i]];
+      }
+      // Se sacan desde el final: la de Claude queda entre las 4 primeras
+      if (claudeSlot !== null) {
+        farewellBag.splice(farewellBag.length - claudeSlot, 0, CLAUDE_FAREWELL);
+        claudeSlot = null;
       }
     }
     return farewellBag.pop();
@@ -519,7 +533,7 @@ window.ChickExits = (() => {
       { transform: "translateY(0)" }, { transform: "translateY(-10px)" }, { transform: "translateY(0)" },
       { transform: "translateY(-6px)" }, { transform: "translateY(0)" },
     ], { duration: 600, fill: "none" });
-    await sleep(1500);
+    await sleep(3200);
     await run(b, [{ opacity: 1 }, { opacity: 0 }], { duration: 250 });
     b.remove();
   }
@@ -553,5 +567,5 @@ window.ChickExits = (() => {
     slot.style.visibility = "hidden";
   }
 
-  return { play, reset: () => { bag = []; farewellBag = []; }, names: NAMES };
+  return { play, reset: newRound, names: NAMES };
 })();
