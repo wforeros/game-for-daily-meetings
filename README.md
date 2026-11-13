@@ -7,6 +7,12 @@ App 100% frontend para sortear el orden de los updates en una reunión.
 3. Haz click en un pollito: levanta el ala y su etiqueta muestra el nombre.
 4. Pulsa **Siguiente** (o `→`) y el pollito se va. Luego elige al siguiente.
 
+Cada pollito sale de una forma distinta (al azar, sin repetirse hasta usar
+las 7): en carro 🚗, en avión ✈️, aplastado por un yunque 💥, mirando el
+reloj y subiendo al bus 🚌, con un jetpack 🚀, con globos 🎈 o volando 🐥.
+Para probar una salida concreta: `index.html?salida=carro` (también `avion`,
+`yunque`, `bus`, `cohete`, `globos`, `volando`).
+
 Hay 7 variantes de pollito: guante, casco, cabello, zapatos, tatuaje, gafas y moño.
 
 ## Uso

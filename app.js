@@ -100,8 +100,10 @@
   <path d="M58 140 L58 157 M82 140 L82 157" stroke="#d9772b" stroke-width="3" stroke-linecap="round"/>
   ${feet}
   ${acc.feet || ""}
-  <!-- ala derecha (fija) -->
-  <ellipse cx="112" cy="106" rx="11" ry="23" fill="#e8962f" transform="rotate(-12 112 106)"/>
+  <!-- ala derecha -->
+  <g class="wing-right">
+    <ellipse cx="112" cy="106" rx="11" ry="23" fill="#e8962f" transform="rotate(-12 112 106)"/>
+  </g>
   <!-- cuerpo -->
   <path d="M70 24 C 98 24, 112 58, 116 92 C 120 128, 100 152, 70 152 C 40 152, 20 128, 24 92 C 28 58, 42 24, 70 24 Z" fill="url(#${id})"/>
   ${acc.body || ""}
@@ -123,8 +125,12 @@
 </svg>`;
   }
 
+  // ---------- Salidas ----------
+  const Exits = window.ChickExits;
+
   // ---------- Utilidades ----------
   const $ = (s) => document.querySelector(s);
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const shuffle = (arr) => {
     const a = arr.slice();
     for (let i = a.length - 1; i > 0; i--) {
@@ -192,6 +198,7 @@
     selected = null;
     turn = 0;
     left = order.length;
+    Exits.reset();
 
     order.forEach((name, i) => {
       const slot = document.createElement("div");
@@ -234,7 +241,7 @@
     els.next.focus({ preventScroll: true });
   }
 
-  function next() {
+  async function next() {
     if (!selected) return;
     const { slot, name } = selected;
     selected = null;
@@ -246,19 +253,21 @@
     li.innerHTML = `<span>${turn}.</span>`;
     li.append(document.createTextNode(name));
     els.spoken.append(li);
+    els.remaining.textContent = left === 0
+      ? "Ya no quedan pollitos"
+      : `Quedan ${left} pollito${left === 1 ? "" : "s"}`;
 
-    slot.classList.add("leaving");
-    setTimeout(() => slot.classList.add("gone"), 700);
-    setTimeout(() => {
-      slot.remove();
-      if (left === 0) {
-        els.done.classList.remove("hidden");
-        els.again.focus({ preventScroll: true });
-      } else {
-        els.row.querySelectorAll(".chick").forEach((b) => (b.disabled = false));
-      }
-    }, 1200);
+    await Exits.play(slot, name, (text) => (els.hint.textContent = text));
 
+    slot.classList.add("gone");
+    await sleep(500);
+    slot.remove();
+    if (left === 0) {
+      els.done.classList.remove("hidden");
+      els.again.focus({ preventScroll: true });
+    } else {
+      els.row.querySelectorAll(".chick").forEach((b) => (b.disabled = false));
+    }
     updateStatus();
   }
 
