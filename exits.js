@@ -471,6 +471,59 @@ window.ChickExits = (() => {
     return bag.pop();
   }
 
+  // ---------- Despedidas ----------
+  const FAREWELLS = [
+    "¡Me voy a tomar un café… de 3 horas! ☕",
+    "Si alguien pregunta, estoy en otra reunión",
+    "¡En mi máquina funciona! 👋",
+    "Me voy antes de que me asignen otro ticket",
+    "Nos vemos en el próximo daily… o no 😎",
+    "¡Hasta la vista, bugs!",
+    "Voy a hacer merge sin review 😈",
+    "Bueno, a fingir que trabajo",
+    "¡Chao! Dejé el build roto 🙃",
+    "Me llama mi mamá gallina 🐔",
+    "Alt + F4 y me voy 👋",
+    "Mi update era que me voy",
+    "Me voy a picotear unos bugs 🐛",
+    "Esta reunión pudo ser un correo 📧",
+    "Cámara apagada, modo siesta 😴",
+    "Les dejo mis bloqueos de regalo 🎁",
+    "¡Adiós! No toquen producción 🔥",
+    "Me voy a mover tickets a «Done» 😏",
+    "¿Ya me puedo ir? ¡Gracias!",
+    "Pío, pío… ¡y fuera micrófono! 🎤",
+  ];
+  let farewellBag = [];
+  function farewell() {
+    if (!farewellBag.length) {
+      farewellBag = FAREWELLS.slice();
+      for (let i = farewellBag.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [farewellBag[i], farewellBag[j]] = [farewellBag[j], farewellBag[i]];
+      }
+    }
+    return farewellBag.pop();
+  }
+
+  async function sayGoodbye(ctx) {
+    const b = bubble(ctx, farewell());
+    b.classList.add("farewell");
+    // Que el globo no se salga de la pantalla
+    const r = b.getBoundingClientRect();
+    const margin = 8;
+    if (r.left < margin) b.style.marginLeft = `${margin - r.left}px`;
+    else if (r.right > window.innerWidth - margin) b.style.marginLeft = `${window.innerWidth - margin - r.right}px`;
+
+    await run(ctx.chick, [
+      { transform: "translateY(0)" }, { transform: "translateY(-10px)" }, { transform: "translateY(0)" },
+      { transform: "translateY(-6px)" }, { transform: "translateY(0)" },
+    ], { duration: 600, fill: "none" });
+    await sleep(1500);
+    await run(b, [{ opacity: 1 }, { opacity: 0 }], { duration: 250 });
+    b.remove();
+  }
+
   async function play(slot, name, setHint, forced) {
     const chick = slot.querySelector(".chick");
     const ctx = {
@@ -489,8 +542,10 @@ window.ChickExits = (() => {
     // ?salida=carro en la URL fuerza una salida (útil para probar)
     const fromUrl = new URLSearchParams(location.search).get("salida");
     const key = forced || (EXITS[fromUrl] ? fromUrl : pick());
-    setHint(EXITS[key].label(name));
     try {
+      setHint(`${name} se despide 👋`);
+      await sayGoodbye(ctx);
+      setHint(EXITS[key].label(name));
       await EXITS[key].play(ctx);
     } catch (err) {
       console.error(err);
@@ -498,5 +553,5 @@ window.ChickExits = (() => {
     slot.style.visibility = "hidden";
   }
 
-  return { play, reset: () => (bag = []), names: NAMES };
+  return { play, reset: () => { bag = []; farewellBag = []; }, names: NAMES };
 })();
