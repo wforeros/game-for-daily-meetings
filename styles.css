@@ -303,6 +303,12 @@ textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(255,138
   border: 7px solid transparent; border-top-color: #fff;
   transform: translateX(-50%);
 }
+.bubble.farewell {
+  width: max-content; max-width: 230px;
+  white-space: normal; text-align: center; line-height: 1.2;
+  padding: 6px 14px;
+}
+@media (max-width: 600px) { .bubble.farewell { max-width: 170px; font-size: .9rem; } }
 @keyframes bubble-in { from { transform: translateX(-50%) scale(.3); opacity: 0; } }
 
 .puff {
