@@ -572,6 +572,21 @@ window.ChickExits = (() => {
     b.remove();
   }
 
+  // Lee ?salida=... una sola vez y lo borra de la URL para que no se quede pegado
+  let urlExit = new URLSearchParams(location.search).get("salida");
+  if (urlExit) {
+    try {
+      const url = new URL(location.href);
+      url.searchParams.delete("salida");
+      history.replaceState(null, "", url);
+    } catch { /* sin history */ }
+  }
+  function takeUrlExit() {
+    const k = EXITS[urlExit] ? urlExit : null;
+    urlExit = null;
+    return k;
+  }
+
   async function play(slot, name, setHint, forced) {
     const chick = slot.querySelector(".chick");
     const ctx = {
@@ -587,9 +602,8 @@ window.ChickExits = (() => {
       return;
     }
 
-    // ?salida=carro en la URL fuerza una salida (útil para probar)
-    const fromUrl = new URLSearchParams(location.search).get("salida");
-    const key = forced || (EXITS[fromUrl] ? fromUrl : pick());
+    // ?salida=carro en la URL fuerza esa salida SOLO para el siguiente pollito
+    const key = forced || takeUrlExit() || pick();
     try {
       setHint(`${name} se despide 👋`);
       await sayGoodbye(ctx);

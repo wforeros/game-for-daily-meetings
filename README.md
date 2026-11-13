@@ -11,8 +11,8 @@ Cada pollito sale de una forma distinta (al azar, sin repetirse hasta usar
 todas): en carro 🚗, en avión ✈️, aplastado por un yunque 💥, mirando el
 reloj y subiendo al bus 🚌, con un jetpack 🚀, con globos 🎈, volando 🐥 o atrapado
 por unos vaqueros a caballo 🤠.
-Para probar una salida concreta (ojo: mientras el parámetro esté en la URL,
-siempre saldrá esa): `index.html?salida=carro` (también `avion`,
+Para probar una salida concreta (solo aplica al siguiente pollito; luego
+vuelve a ser al azar): `index.html?salida=carro` (también `avion`,
 `yunque`, `bus`, `cohete`, `globos`, `volando`, `vaqueros`).
 
 Hay 7 variantes de pollito: guante, casco, cabello, zapatos, tatuaje, gafas y moño.
