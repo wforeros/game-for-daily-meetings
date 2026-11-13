@@ -277,6 +277,19 @@ textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(255,138
 .propeller { transform-box: fill-box; transform-origin: center; animation: spin .07s linear infinite alternate; }
 @keyframes spin { to { transform: scaleY(.15); } }
 
+.leg { transform-box: fill-box; transform-origin: 50% 0; }
+.galloping .leg-a { animation: gallop-a .22s ease-in-out infinite alternate; }
+.galloping .leg-b { animation: gallop-b .22s ease-in-out infinite alternate; }
+@keyframes gallop-a { from { transform: rotate(28deg); } to { transform: rotate(-28deg); } }
+@keyframes gallop-b { from { transform: rotate(-28deg); } to { transform: rotate(28deg); } }
+.horse > svg { transform-origin: 50% 100%; }
+.galloping > svg { animation: gallop-bob .22s ease-in-out infinite alternate; }
+@keyframes gallop-bob { from { transform: translateY(0) rotate(1deg); } to { transform: translateY(-8px) rotate(-1deg); } }
+.spin-lasso { transform-box: fill-box; transform-origin: center; animation: lasso-spin .35s linear infinite alternate; }
+@keyframes lasso-spin { from { transform: scaleX(1); } to { transform: scaleX(.35); } }
+.lasso { position: absolute; left: 0; width: 100%; bottom: 30%; z-index: 3; }
+.lasso svg { width: 100%; display: block; overflow: visible; }
+
 .anvil-shadow { height: 14px; border-radius: 50%; background: rgba(40, 20, 5, .35); }
 
 .jetpack { position: absolute; left: -10%; width: 120%; bottom: 10%; z-index: -1; }

@@ -93,6 +93,72 @@ window.ChickExits = (() => {
   <path d="M27 49 L33 49 L30 53 Z M52 42 L58 42 L55 46 Z M75 53 L81 53 L78 57 Z" fill="#7a5236"/>
 </svg>`;
 
+
+  const HORSE = `
+<svg viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+  <!-- patas traseras (lado lejano) -->
+  <g class="leg leg-b"><rect x="70" y="122" width="11" height="52" rx="5" fill="#8a5126"/><rect x="68" y="168" width="15" height="8" rx="3" fill="#3b2414"/></g>
+  <g class="leg leg-a"><rect x="152" y="122" width="11" height="52" rx="5" fill="#8a5126"/><rect x="150" y="168" width="15" height="8" rx="3" fill="#3b2414"/></g>
+  <!-- cola -->
+  <path d="M58 104 Q30 100 26 124 Q24 140 36 146 Q34 128 48 118 Q56 114 62 112 Z" fill="#4a2a12"/>
+  <!-- cuerpo -->
+  <ellipse cx="118" cy="114" rx="64" ry="30" fill="#a8672f"/>
+  <ellipse cx="104" cy="104" rx="30" ry="9" fill="#c0803f" opacity=".6"/>
+  <!-- cuello y cabeza -->
+  <path d="M158 104 Q166 72 188 54 L204 66 Q186 86 180 118 Z" fill="#a8672f"/>
+  <ellipse cx="206" cy="66" rx="24" ry="13" fill="#a8672f" transform="rotate(28 206 66)"/>
+  <ellipse cx="220" cy="76" rx="9" ry="7" fill="#c0803f" transform="rotate(28 220 76)"/>
+  <circle cx="223" cy="78" r="1.8" fill="#3b2414"/>
+  <circle cx="200" cy="58" r="3" fill="#1b120c"/>
+  <circle cx="201" cy="57" r="1" fill="#fff"/>
+  <path d="M190 48 L194 36 L198 50 Z" fill="#8a5126"/>
+  <!-- crin -->
+  <path d="M186 50 Q176 58 170 72 Q166 82 160 92 Q170 86 172 78 Q178 70 180 62 Q186 56 192 52 Z" fill="#4a2a12"/>
+  <!-- riendas -->
+  <path d="M212 74 Q180 76 150 70" stroke="#5a3418" stroke-width="2" fill="none"/>
+  <!-- silla -->
+  <path d="M84 88 Q112 80 150 88 L148 100 Q114 94 86 100 Z" fill="#7a2e1e"/>
+  <rect x="110" y="98" width="6" height="24" rx="2" fill="#5a3418"/>
+  <!-- vaqueros -->
+  
+  <g>
+    <ellipse cx="96" cy="70" rx="21" ry="25" fill="#f6ae4a"/>
+    <ellipse cx="100" cy="64" rx="2.6" ry="3.2" fill="#1b120c"/>
+    <ellipse cx="110" cy="64" rx="2.6" ry="3.2" fill="#1b120c"/>
+    <path d="M96 58 L103 60 M114 58 L107 60" stroke="#3b2414" stroke-width="2" stroke-linecap="round"/>
+    <path d="M114 69 L122 71 L114 74 Z" fill="#e0702a"/>
+    <path d="M82 80 Q98 92 114 80 L108 90 Q98 96 88 90 Z" fill="#3a7bd5"/>
+    <ellipse cx="98" cy="47" rx="28" ry="5" fill="#d9b26f" stroke="#3b2414" stroke-width="1.5"/>
+    <path d="M84 47 Q84 28 92 30 Q98 34 104 30 Q112 28 112 47 Z" fill="#d9b26f" stroke="#3b2414" stroke-width="1.5"/>
+    <path d="M84 43 L112 43" stroke="#3b2414" stroke-width="3"/>
+  </g>
+  <g>
+    <ellipse cx="136" cy="70" rx="21" ry="25" fill="#f6ae4a"/>
+    <ellipse cx="140" cy="64" rx="2.6" ry="3.2" fill="#1b120c"/>
+    <ellipse cx="150" cy="64" rx="2.6" ry="3.2" fill="#1b120c"/>
+    <path d="M136 58 L143 60 M154 58 L147 60" stroke="#3b2414" stroke-width="2" stroke-linecap="round"/>
+    <path d="M154 69 L162 71 L154 74 Z" fill="#e0702a"/>
+    <path d="M122 80 Q138 92 154 80 L148 90 Q138 96 128 90 Z" fill="#f2c94c"/>
+    <ellipse cx="138" cy="47" rx="28" ry="5" fill="#f2efe6" stroke="#3b2414" stroke-width="1.5"/>
+    <path d="M124 47 Q124 28 132 30 Q138 34 144 30 Q152 28 152 47 Z" fill="#f2efe6" stroke="#3b2414" stroke-width="1.5"/>
+    <path d="M124 43 L152 43" stroke="#3b2414" stroke-width="3"/>
+  </g>
+  <!-- lazo girando -->
+  <g class="rider-lasso">
+    <path d="M150 64 L156 26" stroke="#c8a165" stroke-width="3" stroke-linecap="round"/>
+    <ellipse class="spin-lasso" cx="156" cy="18" rx="26" ry="7" fill="none" stroke="#c8a165" stroke-width="3.5"/>
+  </g>
+  <!-- patas delanteras (lado cercano) -->
+  <g class="leg leg-a"><rect x="82" y="122" width="12" height="52" rx="5" fill="#a8672f"/><rect x="80" y="168" width="16" height="8" rx="3" fill="#3b2414"/></g>
+  <g class="leg leg-b"><rect x="164" y="122" width="12" height="52" rx="5" fill="#a8672f"/><rect x="162" y="168" width="16" height="8" rx="3" fill="#3b2414"/></g>
+</svg>`;
+
+  const LASSO = `
+<svg viewBox="0 0 100 30" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="50" cy="15" rx="46" ry="11" fill="none" stroke="#c8a165" stroke-width="4"/>
+  <path d="M90 12 Q110 0 120 -40" stroke="#c8a165" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>`;
+
   // ---------- Ayudantes ----------
   // Pone un objeto en el slot del pollito. `anchor` es la fracción del ancho del
   // objeto que queda alineada con el centro del pollito (+ `shift` px).
@@ -157,23 +223,6 @@ window.ChickExits = (() => {
     b.textContent = text;
     ctx.slot.append(b);
     return b;
-  }
-
-  function feathers(ctx, count = 6) {
-    const cx = ctx.slot.offsetWidth / 2;
-    for (let i = 0; i < count; i++) {
-      const f = document.createElement("div");
-      f.className = "feather";
-      f.style.left = `${cx + (Math.random() - 0.5) * ctx.size * 0.6}px`;
-      f.style.bottom = `${ctx.size * (0.6 + Math.random() * 0.4)}px`;
-      ctx.slot.append(f);
-      const sway = (Math.random() - 0.5) * 60;
-      run(f, [
-        { transform: "translate(0,0) rotate(0)", opacity: 1 },
-        { transform: `translate(${sway}px, ${ctx.size * 0.3}px) rotate(${120 + Math.random() * 120}deg)`, opacity: 1, offset: 0.6 },
-        { transform: `translate(${-sway}px, ${ctx.size * 0.6}px) rotate(300deg)`, opacity: 0 },
-      ], { duration: 1600 + Math.random() * 600, delay: i * 80, easing: "ease-out" }).then(() => f.remove());
-    }
   }
 
   // ---------- Las 7 salidas ----------
@@ -360,21 +409,50 @@ window.ChickExits = (() => {
       },
     },
 
-    volando: {
-      label: (n) => `${n} se va volando 🐥`,
+    vaqueros: {
+      label: (n) => `¡Yiijaa! Unos vaqueros se llevan a ${n} 🤠`,
       async play(ctx) {
         const { chick, size } = ctx;
-        chick.classList.add("flying");
-        await run(chick, [{ transform: "translateY(0)" }, { transform: `translateY(${-size * 0.3}px)` }],
-          { duration: 700, easing: "ease-out" });
-        feathers(ctx, 7);
-        const off = offscreen(chick);
+        // El anca del caballo (x≈62 de 240) queda alineada con el pollito
+        const horse = addProp(ctx, HORSE, { width: size * 3.4, anchor: 58 / 240, bottom: -10, cls: "horse" });
+        const off = offscreen(horse);
+        horse.classList.add("galloping");
+        await run(horse, [{ transform: `translateX(${off.left}px)` }, { transform: "translateX(0)" }],
+          { duration: 1500, easing: "cubic-bezier(.2,.7,.35,1)" });
+        horse.classList.remove("galloping");
+        await run(horse, [{ transform: "rotate(0)" }, { transform: "rotate(-4deg)" }, { transform: "rotate(0)" }],
+          { duration: 350, fill: "none" });
+
+        // Lanza el lazo
+        horse.querySelector(".rider-lasso").style.opacity = "0";
+        const lasso = document.createElement("div");
+        lasso.className = "lasso";
+        lasso.innerHTML = LASSO;
+        ctx.body.append(lasso);
+        await run(lasso, [
+          { transform: `translate(${size * 0.9}px, ${-size * 1.3}px) scale(1.4) rotate(-30deg)`, opacity: 0 },
+          { transform: `translate(${size * 0.4}px, ${-size * 0.9}px) scale(1.3) rotate(-10deg)`, opacity: 1, offset: 0.4 },
+          { transform: "translate(0, 0) scale(1) rotate(0)", opacity: 1 },
+        ], { duration: 700, easing: "ease-in" });
         await run(chick, [
-          { transform: `translate(0, ${-size * 0.3}px) rotate(0)` },
-          { transform: `translate(${size * 0.8}px, ${-size * 0.9}px) rotate(10deg)`, offset: 0.3 },
-          { transform: `translate(${size * 1.8}px, ${-size * 0.7}px) rotate(6deg)`, offset: 0.5 },
-          { transform: `translate(${off.right}px, ${off.up - size}px) rotate(15deg)` },
-        ], { duration: 1800, easing: "ease-in" });
+          { transform: "translateY(0)" }, { transform: "translateY(4px) scale(1.05, .95)" }, { transform: "translateY(0)" },
+        ], { duration: 220 });
+
+        // ¡Arriba!
+        const seat = -size * 1.12;
+        await run(chick, [
+          { transform: "translate(0, 0) rotate(0)" },
+          { transform: `translate(${size * 0.05}px, ${seat - size * 0.45}px) rotate(-20deg)`, offset: 0.55 },
+          { transform: `translate(0, ${seat}px) rotate(-8deg)` },
+        ], { duration: 650, easing: "ease-out" });
+        board(chick, horse);
+        chick.style.transform = "rotate(-8deg)";
+        await sleep(200);
+        horse.classList.add("galloping");
+        await run(horse, [
+          { transform: "translateX(0)" },
+          { transform: `translateX(${off.right + size}px)` },
+        ], { duration: 1500, easing: "cubic-bezier(.5,0,.8,.5)" });
       },
     },
   };
