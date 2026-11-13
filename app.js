@@ -115,7 +115,8 @@
   <path d="M49 52 L63 56 M91 52 L77 56" stroke="#3b2414" stroke-width="3" stroke-linecap="round"/>
   ${acc.face || ""}
   <!-- pico -->
-  <path d="M65 71 L75 71 L70 78 Z" fill="#e0702a" stroke="#b5521a" stroke-width="1" stroke-linejoin="round"/>
+  <path class="beak-low" d="M66 73 L74 73 L70 79 Z" fill="#c95f22" stroke="#b5521a" stroke-width="1" stroke-linejoin="round"/>
+  <path d="M64.5 70 L75.5 70 L70 75.5 Z" fill="#e0702a" stroke="#b5521a" stroke-width="1" stroke-linejoin="round"/>
   ${acc.top || ""}
   <!-- ala izquierda (se levanta) -->
   <g class="wing-left">
@@ -151,12 +152,14 @@
     setup: $("#setup"), board: $("#board"), names: $("#names"), count: $("#count"),
     start: $("#start"), row: $("#row"), hint: $("#hint"), remaining: $("#remaining"),
     spoken: $("#spoken"), next: $("#next"), restart: $("#restart"),
-    done: $("#done"), again: $("#again"), edit: $("#edit"),
+    done: $("#done"), again: $("#again"), edit: $("#edit"), finale: $("#finale"),
   };
   let names = [];
   let selected = null;   // { slot, button, name }
   let left = 0;
   let turn = 0;
+  let spokenOrder = [];   // [{ name, variant }] en el orden en que hablaron
+  let chatTimer = null;
 
   // ---------- Configuración ----------
   $("#setupChick").innerHTML = chickSVG("guante");
@@ -193,6 +196,8 @@
       return pool.pop();
     });
 
+    stopFinale();
+    spokenOrder = [];
     els.row.innerHTML = "";
     els.spoken.innerHTML = "";
     selected = null;
@@ -220,7 +225,7 @@
       body.innerHTML = chickSVG(variants[i]);
 
       btn.append(tag, body);
-      btn.addEventListener("click", () => select(slot, btn, tag, name));
+      btn.addEventListener("click", () => select(slot, btn, tag, name, variants[i]));
       slot.append(btn);
       els.row.append(slot);
     });
@@ -228,9 +233,9 @@
     updateStatus();
   }
 
-  function select(slot, btn, tag, name) {
+  function select(slot, btn, tag, name, variant) {
     if (selected) return;
-    selected = { slot, btn, name };
+    selected = { slot, btn, name, variant };
     btn.classList.add("selected");
     tag.textContent = name;
     tag.title = name;
@@ -243,8 +248,9 @@
 
   async function next() {
     if (!selected) return;
-    const { slot, name } = selected;
+    const { slot, name, variant } = selected;
     selected = null;
+    spokenOrder.push({ name, variant });
     els.next.classList.add("hidden");
 
     turn++;
@@ -263,12 +269,67 @@
     await sleep(500);
     slot.remove();
     if (left === 0) {
-      els.done.classList.remove("hidden");
-      els.again.focus({ preventScroll: true });
+      showFinale();
     } else {
       els.row.querySelectorAll(".chick").forEach((b) => (b.disabled = false));
     }
     updateStatus();
+  }
+
+  // ---------- Pantalla final: todos los pollitos charlando ----------
+  const PHRASES = [
+    "¡Listo!", "Sin bloqueos 💪", "Bla, bla, bla…", "¡Gracias, equipo!", "Nos vemos 👋",
+    "PR en review 👀", "¿Café? ☕", "¡Pío pío!", "Todo en verde ✅", "Mañana sigo",
+    "¡Buen daily!", "Jajaja 😂", "¿Quién comparte pantalla?", "¡Se me fue el internet!",
+    "Ya lo deployé 🚀", "Te escribo por chat", "¡Me encanta!", "¿Lo vemos después?",
+  ];
+
+  function showFinale() {
+    els.finale.innerHTML = "";
+    spokenOrder.forEach(({ name, variant }, i) => {
+      const slot = document.createElement("div");
+      slot.className = "finale-chick";
+      slot.style.setProperty("--i", i);
+      slot.style.setProperty("--delay", `${(-Math.random() * 2.4).toFixed(2)}s`);
+
+      const bubble = document.createElement("div");
+      bubble.className = "talk";
+      const tag = document.createElement("div");
+      tag.className = "tag";
+      tag.textContent = name;
+      tag.title = name;
+      tag.style.setProperty("--tilt", `${(Math.random() * 8 - 4).toFixed(1)}deg`);
+      const body = document.createElement("div");
+      body.className = "chick-body";
+      body.innerHTML = chickSVG(variant);
+
+      slot.append(bubble, tag, body);
+      els.finale.append(slot);
+    });
+
+    els.done.classList.remove("hidden");
+    els.board.classList.add("finished");
+    els.again.focus({ preventScroll: true });
+
+    // Cada poco, un pollito al azar dice algo (sin repetir al que ya habla)
+    const chicks = [...els.finale.children];
+    const say = () => {
+      const quiet = chicks.filter((c) => !c.classList.contains("talking"));
+      const maxTalking = Math.max(1, Math.ceil(chicks.length / 3));
+      if (!quiet.length || chicks.length - quiet.length >= maxTalking) return;
+      const c = quiet[Math.floor(Math.random() * quiet.length)];
+      c.querySelector(".talk").textContent = PHRASES[Math.floor(Math.random() * PHRASES.length)];
+      c.classList.add("talking");
+      setTimeout(() => c.classList.remove("talking"), 1800 + Math.random() * 900);
+    };
+    setTimeout(say, 600 + chicks.length * 120);
+    chatTimer = setInterval(say, 650);
+  }
+
+  function stopFinale() {
+    els.board.classList.remove("finished");
+    clearInterval(chatTimer);
+    chatTimer = null;
   }
 
   function updateStatus() {
@@ -289,6 +350,7 @@
   });
 
   function backToSetup() {
+    stopFinale();
     els.board.classList.add("hidden");
     els.done.classList.add("hidden");
     els.setup.classList.remove("hidden");
