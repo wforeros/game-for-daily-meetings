@@ -414,7 +414,7 @@ window.ChickExits = (() => {
     "¡Adiós! No toquen producción 🔥",
     "Me voy a mover tickets a «Done» 😏",
     "¿Ya me puedo ir? ¡Gracias!",
-    "Pío, pío… ¡y fuera micrófono! 🎤",
+    "Si se cae Claude, no trabajo 🤷",
   ];
   let farewellBag = [];
   function farewell() {
