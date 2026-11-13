@@ -271,9 +271,46 @@
     if (left === 0) {
       showFinale();
     } else {
+      if (left > 1) await shuffleRow();
       els.row.querySelectorAll(".chick").forEach((b) => (b.disabled = false));
     }
     updateStatus();
+  }
+
+  // Los pollitos que quedan cambian de lugar dando saltitos y se renumeran
+  async function shuffleRow() {
+    const slots = [...els.row.children];
+    let order = shuffle(slots);
+    for (let i = 0; i < 5 && order.every((s, j) => s === slots[j]); i++) order = shuffle(slots);
+
+    els.hint.textContent = "¡Se revuelven los pollitos! 🔀";
+    const first = new Map(slots.map((s) => [s, s.getBoundingClientRect()]));
+    order.forEach((s) => els.row.append(s));
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const moves = order.map((s, i) => {
+      const f = first.get(s);
+      const l = s.getBoundingClientRect();
+      const dx = f.left - l.left;
+      const dy = f.top - l.top;
+      if (reduced || (!dx && !dy)) return null;
+      const hop = i % 2 ? 40 : 80; // alturas distintas para que no choquen
+      return s.animate([
+        { transform: `translate(${dx}px, ${dy}px)` },
+        { transform: `translate(${dx / 2}px, ${dy / 2 - hop}px)`, offset: 0.5 },
+        { transform: "translate(0, 0)" },
+      ], { duration: 750, delay: i * 50, easing: "ease-in-out" }).finished;
+    });
+    await Promise.all(moves);
+
+    order.forEach((s, i) => {
+      const tag = s.querySelector(".tag");
+      tag.textContent = i + 1;
+      s.querySelector(".chick").setAttribute("aria-label", `Pollito número ${i + 1}`);
+      tag.animate([{ transform: "scale(.5)" }, { transform: "scale(1.25)" }, { transform: "scale(1)" }],
+        { duration: 350, easing: "ease-out" });
+    });
+    await sleep(300);
   }
 
   // ---------- Pantalla final: todos los pollitos charlando ----------
