@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pollitos del Daily</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="sky" aria-hidden="true">
+    <div class="sun"></div>
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+  </div>
+  <div class="ground" aria-hidden="true"></div>
+
+  <!-- Pantalla de configuración -->
+  <main id="setup" class="screen">
+    <div class="card">
+      <div class="card-chick" id="setupChick" aria-hidden="true"></div>
+      <h1>Pollitos del Daily</h1>
+      <p class="subtitle">Escribe los nombres de los participantes, uno por línea.</p>
+      <textarea id="names" rows="7" placeholder="Ana&#10;Carlos&#10;Lucía&#10;Pedro" spellcheck="false"></textarea>
+      <div class="setup-footer">
+        <span id="count" class="count">0 participantes</span>
+        <button id="start" class="btn btn-primary" disabled>¡A formarse! 🐣</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Tablero -->
+  <main id="board" class="screen hidden">
+    <header class="board-header">
+      <h2 id="hint">Toca un pollito para ver a quién le toca</h2>
+      <p id="remaining" class="remaining"></p>
+    </header>
+
+    <section id="row" class="row" aria-label="Participantes"></section>
+
+    <ol id="spoken" class="spoken" aria-label="Ya hablaron"></ol>
+
+    <div class="corner-left">
+      <button id="restart" class="btn btn-ghost">↺ Cambiar nombres</button>
+    </div>
+    <button id="next" class="btn btn-primary btn-next hidden">Siguiente →</button>
+
+    <div id="done" class="done hidden">
+      <div class="card">
+        <div class="party" aria-hidden="true">🎉</div>
+        <h2>¡Todos dieron su update!</h2>
+        <p class="subtitle">Buen trabajo, equipo.</p>
+        <div class="done-actions">
+          <button id="again" class="btn btn-primary">Otra ronda</button>
+          <button id="edit" class="btn btn-ghost">Editar nombres</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
